@@ -58,6 +58,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Drivers/HardWare/OLED/OLED.h
     Drivers/HardWare/OLED/OLED_Data.c
     Drivers/HardWare/OLED/OLED_Data.h
+    Drivers/HardWare/CAN/CAN_Driver.c
+    Drivers/HardWare/CAN/CAN_Driver.h
+    
     
 )
 

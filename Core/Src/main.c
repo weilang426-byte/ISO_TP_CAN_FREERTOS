@@ -79,6 +79,11 @@ int main(void)
 
   /* USER CODE BEGIN Init */
 
+
+//初始化HAL，开启系统时钟，配置GPIO CAN  I2C1，初始化OLED,初始化RTOS内核，生成创建的任务，然后
+//开启调度器，所有的Init函数都要在调度器开始之前。
+
+
   /* USER CODE END Init */
 
   /* Configure the system clock */

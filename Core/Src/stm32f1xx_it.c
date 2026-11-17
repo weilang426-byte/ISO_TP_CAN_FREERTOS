@@ -55,6 +55,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern CAN_HandleTypeDef hcan;
 extern TIM_HandleTypeDef htim4;
 
 /* USER CODE BEGIN EV */
@@ -160,6 +161,34 @@ void DebugMon_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles USB high priority or CAN TX interrupts.
+  */
+void USB_HP_CAN1_TX_IRQHandler(void)
+{
+  /* USER CODE BEGIN USB_HP_CAN1_TX_IRQn 0 */
+
+  /* USER CODE END USB_HP_CAN1_TX_IRQn 0 */
+  HAL_CAN_IRQHandler(&hcan);
+  /* USER CODE BEGIN USB_HP_CAN1_TX_IRQn 1 */
+
+  /* USER CODE END USB_HP_CAN1_TX_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USB low priority or CAN RX0 interrupts.
+  */
+void USB_LP_CAN1_RX0_IRQHandler(void)
+{
+  /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 0 */
+
+  /* USER CODE END USB_LP_CAN1_RX0_IRQn 0 */
+  HAL_CAN_IRQHandler(&hcan);
+  /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 1 */
+
+  /* USER CODE END USB_LP_CAN1_RX0_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM4 global interrupt.
   */
 void TIM4_IRQHandler(void)
@@ -175,4 +204,32 @@ void TIM4_IRQHandler(void)
 
 /* USER CODE BEGIN 1 */
 
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)//接收中断回调函数
+{
+      if (hcan->Instance == CAN1)
+    {
+       
+    }
+}
+
+//发送回调函数
+void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan){
+      if (hcan->Instance == CAN1)
+    {
+        // 邮箱 0 发送成功，在这里打断点验证
+    }
+}
+void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef *hcan){
+      if (hcan->Instance == CAN1)
+    {
+        // 邮箱 1 发送成功，在这里打断点验证
+    }
+}
+void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef *hcan){
+      if (hcan->Instance == CAN1)
+    {
+        // 邮箱 2 发送成功，在这里打断点验证
+    }
+}
 /* USER CODE END 1 */
