@@ -20,6 +20,7 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "can.h"
+#include "i2c.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -90,8 +91,10 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_CAN_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
+  OLED_Init(); // Initialize the OLED display
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -107,6 +110,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

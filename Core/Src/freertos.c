@@ -25,7 +25,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "OLED.h"
+#include <stdint.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,10 +48,10 @@
 /* USER CODE BEGIN Variables */
 
 /* USER CODE END Variables */
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
+/* Definitions for OLED_TEST */
+osThreadId_t OLED_TESTHandle;
+const osThreadAttr_t OLED_TEST_attributes = {
+  .name = "OLED_TEST",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
@@ -91,8 +92,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* creation of OLED_TEST */
+  OLED_TESTHandle = osThreadNew(StartDefaultTask, NULL, &OLED_TEST_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -117,6 +118,9 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
+    for(uint8_t i =0;i<2;i++);
+    OLED_ShowString(0, 0, "this is a test", OLED_6X8);
+    OLED_Update();
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
