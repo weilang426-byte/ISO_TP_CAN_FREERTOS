@@ -46,6 +46,9 @@
 extern CAN_HandleTypeDef hcan;
 extern uint8_t CAN_Transmit_Data_32Mask[6][8];
 extern CAN_TxHeaderTypeDef MsgHeader_32Mask[6];
+extern uint8_t CAN_Transmit_Data_32Mask_T[6][8];
+extern CAN_TxHeaderTypeDef MsgHeader_32Mask_T[6];
+
 
 /* USER CODE END PM */
 
@@ -190,7 +193,7 @@ void CAN_P_TX_Task(void *argument)
   /* Infinite loop */
   for(;;)
   {
-/*     for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++) {
        HAL_CAN_ActivateNotification(&hcan, CAN_IT_TX_MAILBOX_EMPTY);//开启通知
       HAL_CAN_Transmit(&MsgHeader_32Mask[i], CAN_Transmit_Data_32Mask[i]);
       //如果发送成功中断中释放二进制信号量TX_Flag,在这里判断然后将数据加入队列中。
@@ -209,7 +212,7 @@ void CAN_P_TX_Task(void *argument)
 
 
       osDelay(2000);//2秒发一次
-    } */
+    }
     osDelay(2000);//2秒发一次
  
 
@@ -236,7 +239,7 @@ void CAN_P_RX_Task(void *argument)
   for(;;)
   {//接收
 
-    HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING ); 
+/*     HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING ); 
     //接收中断在接收邮箱有CAN报文时进入，此时中断中释放信号量，才能在这里读取
      osSemaphoreAcquire(RX_FlagHandle, osWaitForever);//申请信号量
     HAL_CAN_Receive(&RxHeader, RxData);
@@ -252,7 +255,7 @@ void CAN_P_RX_Task(void *argument)
         RxHead_Data.RxData[j] = *(RxData+j);
       }
         //入队列
-      osMessageQueuePut(Queue_RxDatasHandle,&RxHead_Data,0,0);//将数据加入队列
+      osMessageQueuePut(Queue_RxDatasHandle,&RxHead_Data,0,0);//将数据加入队列 */
   
 
     osDelay(1000);//100ms接收一次
@@ -278,20 +281,25 @@ void OLED_Shows_Task(void *argument)
   for(;;)
   {
     //发送队列
+    
     osMessageQueueGet(Queue_TxDatasHandle,&TxData,0,0);//获取发送队列数据
     if(TxData.TxHeader.IDE == CAN_ID_STD){
-      OLED_Printf(0, 0, OLED_8X16, "TxCANID: %x" ,TxData.TxHeader.StdId);
+      OLED_ClearArea(40, 0, 88, 16);
+      OLED_Printf(0, 0, OLED_8X16, "TxID: %x" ,TxData.TxHeader.StdId);
     }else{
-      OLED_Printf(0, 0, OLED_8X16, "TxCANID: %x" ,TxData.TxHeader.ExtId);
+      
+      OLED_Printf(0, 0, OLED_8X16, "TxID: %x" ,TxData.TxHeader.ExtId);
     }
     OLED_Printf(0, 16, OLED_8X16, " %x %x %x %x " ,TxData.TxData[0],TxData.TxData[1],TxData.TxData[2],TxData.TxData[3]);
     OLED_Update();
     //接收队列数据
     osMessageQueueGet(Queue_RxDatasHandle,&RxData,0,0);//获取发送队列数据
     if(RxData.RxHeader.IDE == CAN_ID_STD){
-      OLED_Printf(0, 32, OLED_8X16, "RxCANID: %x" ,RxData.RxHeader.StdId);
+      OLED_ClearArea(40, 32, 88, 16);
+      OLED_Printf(0, 32, OLED_8X16, "RxID: %x" ,RxData.RxHeader.StdId);
     }else{
-      OLED_Printf(0, 32, OLED_8X16, "RxCANID: %x" ,RxData.RxHeader.ExtId);
+      
+      OLED_Printf(0, 32, OLED_8X16, "RxID: %x" ,RxData.RxHeader.ExtId);
     }
     OLED_Printf(0, 48, OLED_8X16, " %x %x %x %x " ,RxData.RxData[0],RxData.RxData[1],RxData.RxData[2],RxData.RxData[3]);
     OLED_Update();
