@@ -19,19 +19,19 @@ HAL_StatusTypeDef HAL_CAN_Filter(void) {
   FilterStructure.FilterScale =CAN_FILTERSCALE_32BIT;//16位还是32位 目前32位
 
   //高位和低位分别是什么 扩展帧不要忘了|0x04
-  FilterStructure.FilterIdHigh = ((0x12345600<<3) |0x04) >>16;
-  FilterStructure.FilterIdLow =(0x12345600<<3) |0x04;
-  FilterStructure.FilterMaskIdHigh =(0x1FFFFF00<<3|0x04)>>16;
-  FilterStructure.FilterMaskIdLow =(0x1FFFFF00<<3|0x04);
+  FilterStructure.FilterIdHigh = 0x0000;
+  FilterStructure.FilterIdLow =0x0000;
+  FilterStructure.FilterMaskIdHigh =0x0000;
+  FilterStructure.FilterMaskIdLow =0x0000;
 
   FilterStructure.FilterFIFOAssignment =CAN_FILTER_FIFO0;//指定两个接收邮箱中的一个 FIFO0
 
   //启动
   FilterStructure.FilterActivation = CAN_FILTER_ENABLE;
-  HAL_CAN_ConfigFilter(&hcan, &FilterStructure);//返回执行结果
+  //HAL_CAN_ConfigFilter(&hcan, &FilterStructure);//返回执行结果
 
 
-
+/*
   //过滤器1的设置，目前全部接收
   FilterStructure.FilterBank = 1;//第1个过滤器 0-13
 
@@ -49,7 +49,7 @@ HAL_StatusTypeDef HAL_CAN_Filter(void) {
 
   //启动
   FilterStructure.FilterActivation = CAN_FILTER_ENABLE;
-
+*/
   return HAL_CAN_ConfigFilter(&hcan, &FilterStructure);//返回执行结果
 
 }
@@ -83,7 +83,7 @@ HAL_StatusTypeDef HAL_CAN_Receive(CAN_RxHeaderTypeDef* RxHeader,uint8_t* RxData)
   //从过滤器0中取帧
   if (HAL_CAN_GetRxFifoFillLevel(&hcan,CAN_RX_FIFO0) != 0)//获取指定接收 FIFO 中待读取报文的数量
   {
-    HAL_CAN_GetRxMessage(&hcan,CAN_RX_FIFO0, RxHeader,RxData);//从指定接收 FIFO 读取最早的一帧报文
+    return HAL_CAN_GetRxMessage(&hcan,CAN_RX_FIFO0, RxHeader,RxData);//从指定接收 FIFO 读取最早的一帧报文
   }
 
 }

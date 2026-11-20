@@ -47,7 +47,17 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+/*用来将发送数据保存到结构体中传入队列。*/
+typedef struct{
+  CAN_TxHeaderTypeDef TxHeader;
+  uint8_t TxData[8];
+}TxDatas;
 
+/*用来将接收数据保存到结构体中传入队列。*/
+typedef struct{
+  CAN_RxHeaderTypeDef RxHeader;
+  uint8_t RxData[8];
+}RxDatas;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

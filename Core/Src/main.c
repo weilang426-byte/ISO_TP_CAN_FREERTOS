@@ -31,6 +31,12 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
+TxDatas TxHead_Data = {0};
+RxDatas RxHead_Data = {0};
+
+
+
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -40,6 +46,31 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
+
+/*CAN发送的数据集*/
+//发送头TxHeader
+CAN_TxHeaderTypeDef MsgHeader_32Mask[6] =
+{
+  {0x000,0x12345600,CAN_ID_EXT,CAN_RTR_DATA,4, DISABLE },//
+  {0x123,0x0789AB00,CAN_ID_STD,CAN_RTR_DATA,4, DISABLE },
+  {0x000,0x12345632,CAN_ID_EXT,CAN_RTR_DATA,4,DISABLE},
+  {0x000,0x12345678,CAN_ID_EXT,CAN_RTR_DATA,4,DISABLE},
+  {0x000,0x1789ABFF,CAN_ID_EXT,CAN_RTR_DATA,4,DISABLE},
+  {0x000,0x143556AE,CAN_ID_EXT,CAN_RTR_DATA,4,DISABLE}
+};
+
+//数据
+uint8_t CAN_Transmit_Data_32Mask[6][8] =
+{
+  {0x11,0x22,0x33,0x44,0,0,0,0},
+  {0x25,0x69,0x60,0x16,0,0,0,0},
+  {0x20,0x60,0x01,0x03,0,0,0,0},
+  {0x02,0x03,0x06,0x10,0,0,0,0},
+  {0x21,0x52,0x31,0x24,0,0,0,0},
+  {0x32,0x10,0x22,0x13,0,0,0,0}
+
+};
+
 
 /* USER CODE END PM */
 
@@ -100,11 +131,22 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   OLED_Init(); // Initialize the OLED display
+  HAL_CAN_Init(&hcan); // Initialize the CAN peripheral CAN初始化
+    /*过滤器配置*/
+  HAL_CAN_Filter(); // Configure the CAN filter CAN过滤器配置
+
+  /*启动*/
+  HAL_CAN_Start(&hcan); // Start the CAN peripheral CAN启动 
+
+
   /* USER CODE END 2 */
 
   /* Init scheduler */
   osKernelInitialize();  /* Call init function for freertos objects (in cmsis_os2.c) */
   MX_FREERTOS_Init();
+    /*这里可以开启部分中断的通知,目前FIFO0有消息时触发，TX发送时触发*/
+  
+
 
   /* Start scheduler */
   osKernelStart();
@@ -113,6 +155,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  
   while (1)
   {
 

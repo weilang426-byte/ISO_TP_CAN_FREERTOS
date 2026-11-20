@@ -22,6 +22,8 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+#include "cmsis_os2.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -36,6 +38,9 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
+extern osSemaphoreId_t TX_FlagHandle;
+
+extern osSemaphoreId_t RX_FlagHandle;
 
 /* USER CODE END PM */
 
@@ -209,6 +214,9 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)//接收中断回
 {
       if (hcan->Instance == CAN1)
     {
+      //接收成功的话释放信号量
+      HAL_CAN_DeactivateNotification(hcan, CAN_IT_RX_FIFO0_MSG_PENDING);//关闭发送中断通知
+      osSemaphoreRelease(RX_FlagHandle);//释放信号量
        
     }
 }
@@ -217,19 +225,26 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)//接收中断回
 void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan){
       if (hcan->Instance == CAN1)
     {
+      HAL_CAN_DeactivateNotification(hcan, CAN_IT_TX_MAILBOX_EMPTY);//关闭发送中断通知
         // 邮箱 0 发送成功，在这里打断点验证
+        //发送成功则触发，释放信号量
+        osSemaphoreRelease(TX_FlagHandle);//释放信号量
     }
 }
 void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef *hcan){
       if (hcan->Instance == CAN1)
     {
+        HAL_CAN_DeactivateNotification(hcan, CAN_IT_TX_MAILBOX_EMPTY);//关闭发送中断通知
         // 邮箱 1 发送成功，在这里打断点验证
+        osSemaphoreRelease(TX_FlagHandle);//释放信号量
     }
 }
 void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef *hcan){
       if (hcan->Instance == CAN1)
     {
+        HAL_CAN_DeactivateNotification(hcan, CAN_IT_TX_MAILBOX_EMPTY);//关闭发送中断通知
         // 邮箱 2 发送成功，在这里打断点验证
+        osSemaphoreRelease(TX_FlagHandle);//释放信号量
     }
 }
 /* USER CODE END 1 */
