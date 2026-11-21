@@ -193,25 +193,25 @@ void CAN_P_TX_Task(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    for (int i = 0; i < 6; i++) {
+      for (int i = 0; i < 6; i++) {
        HAL_CAN_ActivateNotification(&hcan, CAN_IT_TX_MAILBOX_EMPTY);//开启通知
-      HAL_CAN_Transmit(&MsgHeader_32Mask[i], CAN_Transmit_Data_32Mask[i]);
+      HAL_CAN_Transmit(&MsgHeader_32Mask_T[i], CAN_Transmit_Data_32Mask_T[i]);
       //如果发送成功中断中释放二进制信号量TX_Flag,在这里判断然后将数据加入队列中。
       osSemaphoreAcquire(TX_FlagHandle, osWaitForever);//申请信号量
       //将数据加入队列
-      TxHead_Data.TxHeader.StdId = MsgHeader_32Mask[i].StdId;
-      TxHead_Data.TxHeader.ExtId = MsgHeader_32Mask[i].ExtId;
-      TxHead_Data.TxHeader.IDE = MsgHeader_32Mask[i].IDE;
-      TxHead_Data.TxHeader.RTR = MsgHeader_32Mask[i].RTR;
-      TxHead_Data.TxHeader.DLC = MsgHeader_32Mask[i].DLC;
-      TxHead_Data.TxHeader.TransmitGlobalTime = MsgHeader_32Mask[i].TransmitGlobalTime;
+      TxHead_Data.TxHeader.StdId = MsgHeader_32Mask_T[i].StdId;
+      TxHead_Data.TxHeader.ExtId = MsgHeader_32Mask_T[i].ExtId;
+      TxHead_Data.TxHeader.IDE = MsgHeader_32Mask_T[i].IDE;
+      TxHead_Data.TxHeader.RTR = MsgHeader_32Mask_T[i].RTR;
+      TxHead_Data.TxHeader.DLC = MsgHeader_32Mask_T[i].DLC;
+      TxHead_Data.TxHeader.TransmitGlobalTime = MsgHeader_32Mask_T[i].TransmitGlobalTime;
       for (uint8_t j = 0; j < 8; j++) {
         TxHead_Data.TxData[j] = CAN_Transmit_Data_32Mask[i][j];
       }
       osMessageQueuePut(Queue_TxDatasHandle,&TxHead_Data,0,0);//将数据加入队列
 
 
-      osDelay(2000);//2秒发一次
+      osDelay(2500);//2秒发一次
     }
     osDelay(2000);//2秒发一次
  
@@ -239,7 +239,7 @@ void CAN_P_RX_Task(void *argument)
   for(;;)
   {//接收
 
-/*     HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING ); 
+    HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING ); 
     //接收中断在接收邮箱有CAN报文时进入，此时中断中释放信号量，才能在这里读取
      osSemaphoreAcquire(RX_FlagHandle, osWaitForever);//申请信号量
     HAL_CAN_Receive(&RxHeader, RxData);
@@ -255,7 +255,7 @@ void CAN_P_RX_Task(void *argument)
         RxHead_Data.RxData[j] = *(RxData+j);
       }
         //入队列
-      osMessageQueuePut(Queue_RxDatasHandle,&RxHead_Data,0,0);//将数据加入队列 */
+      osMessageQueuePut(Queue_RxDatasHandle,&RxHead_Data,0,0);//将数据加入队列
   
 
     osDelay(1000);//100ms接收一次

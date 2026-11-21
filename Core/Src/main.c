@@ -58,7 +58,6 @@ CAN_TxHeaderTypeDef MsgHeader_32Mask[6] =
   {0x000,0x1289ABFF,CAN_ID_EXT,CAN_RTR_DATA,4,DISABLE},
   {0x000,0x120556AE,CAN_ID_EXT,CAN_RTR_DATA,4,DISABLE}
 };
-
 //数据
 uint8_t CAN_Transmit_Data_32Mask[6][8] =
 {
@@ -80,6 +79,7 @@ CAN_TxHeaderTypeDef MsgHeader_32Mask_T[6] =
   {0x000,0x3A89ABFF,CAN_ID_EXT,CAN_RTR_DATA,4,DISABLE},
   {0x000,0x3A0556AE,CAN_ID_EXT,CAN_RTR_DATA,4,DISABLE}
 };
+
 
 //数据
 uint8_t CAN_Transmit_Data_32Mask_T[6][8] =
@@ -165,9 +165,6 @@ int main(void)
   /* Init scheduler */
   osKernelInitialize();  /* Call init function for freertos objects (in cmsis_os2.c) */
   MX_FREERTOS_Init();
-    /*这里可以开启部分中断的通知,目前FIFO0有消息时触发，TX发送时触发*/
-  
-
 
   /* Start scheduler */
   osKernelStart();
